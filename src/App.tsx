@@ -1,9 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useCallback } from 'react';
+import * as dbTools from './db/db';
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
+  // Create tables
+  const loadData = useCallback(async () => {
+    try {
+      const db = await dbTools.connectToDatabase()
+      await dbTools.createTables(db)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [])
+  
+  useEffect(() => {
+    loadData()
+  }, [loadData])
+
+  const tableNames = useCallback(async () => {
+    try {
+      const db = await dbTools.connectToDatabase()
+      await dbTools.getTableNames(db)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [])
+  
+  useEffect(() => {
+    return(
+      console.log(tableNames)
+    )
+  })
+
   const [count, setCount] = useState(0)
 
   return (
